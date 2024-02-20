@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::codepoint::*;
+use crate::{codepoint::*, get_block_by_code};
 
 lazy_static! {
     /// таблица Unicode
@@ -10,7 +10,7 @@ lazy_static! {
 const DATA: &str = include_str!("./../../../data/ucd 15.1.0/UnicodeData.txt");
 
 /// разбор UnicodeData.txt из UCD и составление хешмапа свойств символов Unicode
-pub fn unicode() -> HashMap<u32, Codepoint>
+fn unicode() -> HashMap<u32, Codepoint>
 {
     let mut map: HashMap<u32, Codepoint> = HashMap::new();
 
@@ -68,6 +68,7 @@ pub fn unicode() -> HashMap<u32, Codepoint>
             decomposition: decomposition.codes,
             canonical_decomposition: vec![],
             compat_decomposition: vec![],
+            block: get_block_by_code(code),
         };
 
         // различные блоки

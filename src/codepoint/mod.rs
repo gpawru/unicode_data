@@ -16,6 +16,7 @@ pub use numeric_type::NumericType;
 pub use simple_case_mapping::SimpleCaseMapping;
 
 use crate::parse::is_composition_exclusion;
+use crate::CodepointsBlock;
 
 /// Кодпоинт Unicode
 /// источник - UCD, UnicodeData.txt
@@ -50,6 +51,8 @@ pub struct Codepoint
     pub canonical_decomposition: Vec<u32>,
     /// полная декомпозиция совместимости
     pub compat_decomposition: Vec<u32>,
+    // блок, к которому относится кодпоинт (Blocks.txt)
+    pub block: Option<&'static CodepointsBlock>,
 }
 
 impl Codepoint

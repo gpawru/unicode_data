@@ -1,2 +1,0 @@
-bake:
-	cargo run
