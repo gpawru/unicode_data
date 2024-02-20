@@ -11,7 +11,9 @@
 ## UCA:
 
 * **DUCET**, **DUCET_IMPLICIT**: `Vec<WeightsEntry>` - allkeys.txt, DUCET (второй вариант - с вычисляемыми весами)
+* **COLLATION_TEST_DUCET_NON_IGNORABLE**, **COLLATION_TEST_DUCET_SHIFTED** - CollationTest, тесты сопоставлений
 
 ## CLDR:
 
 * **CLDR_UND**, **CLDR_UND_IMPLICIT**: `Vec<WeightsEntry>` - allkeys_CLDR.txt, CLDR-версия DUCET
+* **COLLATION_TEST_CLDR_NON_IGNORABLE**, **COLLATION_TEST_CLDR_SHIFTED** - CollationTest, тесты сопоставлений
