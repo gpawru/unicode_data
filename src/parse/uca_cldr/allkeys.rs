@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::get_block_by_name;
 
 /// запись таблицы DUCET / адаптированной таблицы DUCET для CLDR, полученная из allkeys.txt UCA / CLDR
@@ -20,14 +22,28 @@ pub struct Weights
     pub is_variable: bool,
 }
 
+/// веса кодпоинта / последовательности кодпоинтов  
+#[derive(Debug, Clone)]
+pub struct TrieNode
+{
+    pub weights: &'static WeightsEntry,
+    pub children: Option<HashMap<u32, TrieNode>>,
+}
+
 lazy_static! {
     /// таблица DUCET
-    pub static ref DUCET: Vec<WeightsEntry> = allkeys(ALLKEYS_UCA, false);
-    pub static ref DUCET_IMPLICIT: Vec<WeightsEntry> = allkeys(ALLKEYS_UCA, true);
+    pub static ref DUCET: HashMap<u32, TrieNode> = weights_trie(&DUCET_WEIGHTS);
+    pub static ref DUCET_IMPLICIT: HashMap<u32, TrieNode> = weights_trie(&DUCET_IMPLICIT_WEIGHTS);
+
+    pub static ref DUCET_WEIGHTS: Vec<WeightsEntry> = allkeys(ALLKEYS_UCA, false);
+    pub static ref DUCET_IMPLICIT_WEIGHTS: Vec<WeightsEntry> = allkeys(ALLKEYS_UCA, true);
 
     /// таблица DUCET, адаптированная для CLDR
-    pub static ref CLDR_UND: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR, false);
-    pub static ref CLDR_UND_IMPLICIT: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR, true);
+    pub static ref CLDR_UND: HashMap<u32, TrieNode> = weights_trie(&CLDR_UND_WEIGHTS);
+    pub static ref CLDR_UND_IMPLICIT: HashMap<u32, TrieNode> = weights_trie(&CLDR_UND_IMPLICIT_WEIGHTS);
+
+    pub static ref CLDR_UND_WEIGHTS: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR, false);
+    pub static ref CLDR_UND_IMPLICIT_WEIGHTS: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR, true);
 }
 
 const ALLKEYS_UCA: &str = include_str!("./../../../data/uca 15.1.0/allkeys.txt");
@@ -144,7 +160,25 @@ fn allkeys(source: &str, include_implicit_weights: bool) -> Vec<WeightsEntry>
     allkeys
 }
 
-fn implicit_weights(code: u32, aaaa: u16, bbbb: u16, description: &str) -> WeightsEntry
+/// вычисляемые веса
+#[inline]
+pub fn implicit_weights(code: u32) -> WeightsEntry
+{
+    // примечание - во всех таблицах веса для кодпоинтов CJK Compatibility Ideographs уже рассчитаны, не учитываем их здесь
+    match code {
+        0x4E00 ..= 0x9FFF => implicit_weights_core_han(code),
+        0x17000 ..= 0x18AFF | 0x18D00 ..= 0x18D08 => implicit_weights_tangut(code),
+        0x1B170 ..= 0x1B2FF => implicit_weights_nushu(code),
+        0x18B00 ..= 0x18CFF => implicit_weights_khitan(code),
+        0x3400 ..= 0x4DBF | 0x20000 ..= 0x2A6DF | 0x2A700 ..= 0x2EE5F | 0x30000 ..= 0x323AF => {
+            implicit_weights_other_han(code)
+        }
+        _ => implicit_weights_unassigned(code),
+    }
+}
+
+#[inline]
+fn compose_implicit_weights(code: u32, aaaa: u16, bbbb: u16, description: &str) -> WeightsEntry
 {
     WeightsEntry {
         codes: vec![code],
@@ -167,9 +201,10 @@ fn implicit_weights(code: u32, aaaa: u16, bbbb: u16, description: &str) -> Weigh
     }
 }
 
+#[inline]
 pub fn implicit_weights_tangut(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         0xFB00,
         ((code - 0x17000) | 0x8000) as u16,
@@ -177,9 +212,10 @@ pub fn implicit_weights_tangut(code: u32) -> WeightsEntry
     )
 }
 
+#[inline]
 pub fn implicit_weights_nushu(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         0xFB01,
         ((code - 0x1B170) | 0x8000) as u16,
@@ -187,9 +223,10 @@ pub fn implicit_weights_nushu(code: u32) -> WeightsEntry
     )
 }
 
+#[inline]
 pub fn implicit_weights_khitan(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         0xFB02,
         ((code - 0x18B00) | 0x8000) as u16,
@@ -197,9 +234,10 @@ pub fn implicit_weights_khitan(code: u32) -> WeightsEntry
     )
 }
 
+#[inline]
 pub fn implicit_weights_core_han(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         (0xFB40 + (code >> 15)) as u16,
         ((code & 0x7FFF) | 0x8000) as u16,
@@ -207,9 +245,10 @@ pub fn implicit_weights_core_han(code: u32) -> WeightsEntry
     )
 }
 
+#[inline]
 pub fn implicit_weights_other_han(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         (0xFB80 + (code >> 15)) as u16,
         ((code & 0x7FFF) | 0x8000) as u16,
@@ -217,12 +256,71 @@ pub fn implicit_weights_other_han(code: u32) -> WeightsEntry
     )
 }
 
+#[inline]
 pub fn implicit_weights_unassigned(code: u32) -> WeightsEntry
 {
-    implicit_weights(
+    compose_implicit_weights(
         code,
         (0xFBC0 + (code >> 15)) as u16,
         ((code & 0x7FFF) | 0x8000) as u16,
         "Unassigned",
     )
+}
+
+#[inline]
+fn weights_trie(table: &'static Vec<WeightsEntry>) -> HashMap<u32, TrieNode>
+{
+    table
+        .iter()
+        .filter(|w| w.codes.len() == 1)
+        .map(|w| {
+            (
+                w.codes[0],
+                trie_node_children(w, &table.iter().filter(|w| w.codes.len() > 1).collect()),
+            )
+        })
+        .collect()
+}
+
+#[inline]
+fn trie_node_children(
+    parent: &'static WeightsEntry,
+    source: &Vec<&'static WeightsEntry>,
+) -> TrieNode
+{
+    let sequence = &parent.codes;
+
+    let all_children: Vec<&WeightsEntry> = source
+        .iter()
+        .filter(|n| n.codes.len() > sequence.len() && n.codes.starts_with(&sequence))
+        .map(|e| *e)
+        .collect();
+
+    let current_node_children: Vec<&WeightsEntry> = all_children
+        .iter()
+        .filter(|n| n.codes.len() == sequence.len() + 1)
+        .map(|e| *e)
+        .collect();
+
+    if current_node_children.is_empty() {
+        return TrieNode {
+            weights: parent,
+            children: None,
+        };
+    }
+
+    let children = current_node_children
+        .iter()
+        .map(|w| {
+            (
+                *w.codes.last().unwrap(),
+                trie_node_children(w, &all_children),
+            )
+        })
+        .collect();
+
+    TrieNode {
+        weights: parent,
+        children: Some(children),
+    }
 }

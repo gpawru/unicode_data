@@ -18,6 +18,18 @@ pub struct CollationTest
     pub description: String,
 }
 
+impl CollationTest
+{
+    /// кодпоинты в виде строки
+    pub fn as_string(&self) -> String
+    {
+        self.codes
+            .iter()
+            .map(|&c| unsafe { char::from_u32_unchecked(c) })
+            .collect()
+    }
+}
+
 const COLLATION_TEST_DUCET_NON_IGNORABLE_SOURCE: &str =
     include_str!("./../../../data/uca 15.1.0/CollationTest/CollationTest_NON_IGNORABLE.txt");
 const COLLATION_TEST_DUCET_SHIFTED_SOURCE: &str =
