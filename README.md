@@ -10,14 +10,12 @@
 
 ## UCA:
 
-* **DUCET_WEIGHTS**, **DUCET_IMPLICIT_WEIGHTS**: `Vec<WeightsEntry>` - allkeys.txt, DUCET (второй вариант - с вычисляемыми весами)
-* **DUCET**, **DUCET_IMPLICIT**: `HashMap<u32, TrieNode>` - бор, корневые элементы - одиночные кодпоинты, дочерние элементы для каждого уровня - N + 1 кодпоинтов в последовательности
+* **DUCET**: `Vec<WeightsEntry>` - allkeys.txt, DUCET
+* **DUCET_FILTERED_TRIE**: `HashMap<u32, TrieNode>` - DUCET в виде дерева, содержащая только NFD-кодпоинты
 * **COLLATION_TEST_DUCET_NON_IGNORABLE**, **COLLATION_TEST_DUCET_SHIFTED**: `Vec<CollationTest>` - CollationTest, тесты сопоставлений
 
 ## CLDR:
 
-* **CLDR_UND_WEIGHTS**, **CLDR_UND_IMPLICIT_WEIGHTS**: `Vec<WeightsEntry>` - allkeys_CLDR.txt, CLDR-версия DUCET
-* **CLDR_UND**, **CLDR_UND_IMPLICIT**: `HashMap<u32, TrieNode>` - аналогично **DUCET** / **DUCET_IMPLICIT**
+* **CLDR_UND**: `Vec<WeightsEntry>` - allkeys_CLDR.txt, CLDR-версия DUCET
+* **CLDR_FILTERED_TRIE**: `HashMap<u32, TrieNode>` - аналогично **DUCET_FILTERED_TRIE**
 * **COLLATION_TEST_CLDR_NON_IGNORABLE**, **COLLATION_TEST_CLDR_SHIFTED**: `Vec<CollationTest>` - CollationTest, тесты сопоставлений
-
-*также в библиотеке можно найти методы для получения вычисляемых весов: implicit_weights (общий случай), implicit_weights_tangut, implicit_weights_nushu, implicit_weights_khitan, implicit_weights_core_han, implicit_weights_other_han, implicit_weights_unassigned, применимые как для **DUCET** так и для **CLDR_UND**.*
