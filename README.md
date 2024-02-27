@@ -8,6 +8,13 @@
 * **COMPOSITION_EXCLUSIONS**: `Vec<u32>` - CompositionExclusions.txt, исключения композиции
 * **NORMALIZATION_TESTS**: `Vec<NormalizationTest>` - NormalizationTest.txt, тесты нормализации
 
+### нормализация:
+
+* **NFD**, **NFKD**: `HashMap<u32, Vec<Codepoint>>` - полностью разложенная NFD / NFKD декомпозиция
+* **NFC**, **NFKC**: `HashMap<u32, Vec<Codepoint>>` - прекомпозиция NFC / NFKC
+* **COMPOSITION_PAIRS**: `HashMap<u32, HashMap<u32, Codepoint>>` - комбинируемые пары кодпоинтов
+* **COMBINES_BACKWARDS**: `HashMap<u32, HashMap<u32, Codepoint>>` - кодпоинты, комбинируемые с предыдущими
+
 ## UCA:
 
 * **DUCET**: `Vec<WeightsEntry>` - allkeys.txt, DUCET

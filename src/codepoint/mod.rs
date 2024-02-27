@@ -47,10 +47,6 @@ pub struct Codepoint
     pub decomposition_tag: Option<DecompositionTag>,
     /// декомпозиция
     pub decomposition: Vec<u32>,
-    /// полная каноническая декомпозиция
-    pub canonical_decomposition: Vec<u32>,
-    /// полная декомпозиция совместимости
-    pub compat_decomposition: Vec<u32>,
     // блок, к которому относится кодпоинт (Blocks.txt)
     pub block: Option<&'static CodepointsBlock>,
 }
