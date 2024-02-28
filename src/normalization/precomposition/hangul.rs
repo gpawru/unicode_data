@@ -55,7 +55,6 @@ pub fn compose_hangul(first: u32, second: u32) -> Option<u32>
 }
 
 // относится ли кодпоинт к хангыль и может ли быть скомбинирован?
-#[allow(dead_code)]
 pub fn is_composable_hangul(code: u32) -> bool
 {
     let l = code.wrapping_sub(HANGUL_L_BASE);
@@ -66,7 +65,6 @@ pub fn is_composable_hangul(code: u32) -> bool
 }
 
 // является ли кодпоинт гласной или завершающей согласной чамо?
-#[allow(dead_code)]
 pub fn is_composable_hangul_jamo(code: u32) -> bool
 {
     let v = code.wrapping_sub(HANGUL_V_BASE);
