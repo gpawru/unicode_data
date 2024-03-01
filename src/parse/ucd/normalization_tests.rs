@@ -1,5 +1,5 @@
 /// тест из UCD
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct NormalizationTest
 {
     pub part: String,
@@ -12,9 +12,9 @@ pub struct NormalizationTest
     pub c5: String,
 }
 
-impl NormalizationTest
+impl core::fmt::Debug for NormalizationTest
 {
-    pub fn dbg(&self)
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
     {
         macro_rules! codes {
             ($c:expr) => {{
@@ -26,16 +26,9 @@ impl NormalizationTest
             }};
         }
 
-        println!(
-            "\
-        Part: {}\n\
-        Description: {}\n\
-        Line: {}\n\n\
-        C1: {}\n\
-        C2: {}\n\
-        C3: {}\n\
-        C4: {}\n\
-        C5: {}\n",
+        write!(
+            f,
+            "\n\nPart: {}\nDescription: {}\nLine: {}\n\nC1: {}\nC2: {}\nC3: {}\nC4: {}\nC5: {}\n",
             self.part,
             self.description,
             self.line,
@@ -44,7 +37,7 @@ impl NormalizationTest
             codes!(self.c3),
             codes!(self.c4),
             codes!(self.c5)
-        );
+        )
     }
 }
 
