@@ -1,5 +1,5 @@
 /// тест из UCD
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct NormalizationTest
 {
     pub part: String,
@@ -12,12 +12,54 @@ pub struct NormalizationTest
     pub c5: String,
 }
 
+impl NormalizationTest
+{
+    pub fn dbg(&self)
+    {
+        macro_rules! codes {
+            ($c:expr) => {{
+                let s: String = $c
+                    .chars()
+                    .map(|c| format!("{:04X} ", u32::from(c)))
+                    .collect();
+                s
+            }};
+        }
+
+        println!(
+            "\
+        Part: {}\n\
+        Description: {}\n\
+        Line: {}\n\n\
+        C1: {}\n\
+        C2: {}\n\
+        C3: {}\n\
+        C4: {}\n\
+        C5: {}\n",
+            self.part,
+            self.description,
+            self.line,
+            codes!(self.c1),
+            codes!(self.c2),
+            codes!(self.c3),
+            codes!(self.c4),
+            codes!(self.c5)
+        );
+    }
+}
+
 lazy_static! {
     /// тесты нормализации из UCD
     pub static ref NORMALIZATION_TESTS: Vec<NormalizationTest> = normalization_tests();
 }
 
 const DATA: &str = include_str!("./../../../data/ucd 15.1.0/NormalizationTest.txt");
+
+/// получить тест по номеру строки
+pub fn get_normalization_test(i: usize) -> Option<&'static NormalizationTest>
+{
+    NORMALIZATION_TESTS.iter().find(|t| t.line == i)
+}
 
 /// разбор NormalizationTest.txt из UCD
 fn normalization_tests() -> Vec<NormalizationTest>
@@ -57,7 +99,7 @@ fn normalization_tests() -> Vec<NormalizationTest>
         result.push(NormalizationTest {
             part: part.clone(),
             description: description.to_owned(),
-            line: i,
+            line: i + 1,
             c1: codes!(codes[0]),
             c2: codes!(codes[1]),
             c3: codes!(codes[2]),
