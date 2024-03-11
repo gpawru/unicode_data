@@ -54,6 +54,17 @@ pub fn compose_hangul(first: u32, second: u32) -> Option<u32>
     return None;
 }
 
+// относится ли кодпоинт к хангыль
+pub fn is_hangul(code: u32) -> bool
+{
+    let l = code.wrapping_sub(HANGUL_L_BASE);
+    let v = code.wrapping_sub(HANGUL_V_BASE);
+    let t = code.wrapping_sub(HANGUL_T_BASE);
+    let s = code.wrapping_sub(HANGUL_S_BASE);
+
+    (l < HANGUL_L_COUNT) || (v < HANGUL_V_COUNT) || (t < HANGUL_T_COUNT) || (s < HANGUL_S_COUNT)
+}
+
 // относится ли кодпоинт к хангыль и может ли быть скомбинирован?
 pub fn is_composable_hangul(code: u32) -> bool
 {
