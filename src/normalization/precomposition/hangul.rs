@@ -11,9 +11,9 @@ pub const HANGUL_L_COUNT: u32 = 19;
 /// количество гласных
 pub const HANGUL_V_COUNT: u32 = 21;
 /// количество завершающих согласных
-const HANGUL_T_COUNT: u32 = 27;
+pub const HANGUL_T_COUNT: u32 = 27;
 /// количество кодпоинтов на блок LV
-const HANGUL_T_BLOCK_SIZE: u32 = HANGUL_T_COUNT + 1;
+pub const HANGUL_T_BLOCK_SIZE: u32 = HANGUL_T_COUNT + 1;
 /// количество гласных * количество завершающих согласных
 pub const HANGUL_N_COUNT: u32 = 588;
 /// количество слогов хангыль в Unicode
@@ -54,15 +54,12 @@ pub fn compose_hangul(first: u32, second: u32) -> Option<u32>
     return None;
 }
 
-// относится ли кодпоинт к хангыль
-pub fn is_hangul(code: u32) -> bool
+// является ли кодпоинт слогом хангыль?
+pub fn is_syllable(code: u32) -> bool
 {
-    let l = code.wrapping_sub(HANGUL_L_BASE);
-    let v = code.wrapping_sub(HANGUL_V_BASE);
-    let t = code.wrapping_sub(HANGUL_T_BASE);
     let s = code.wrapping_sub(HANGUL_S_BASE);
 
-    (l < HANGUL_L_COUNT) || (v < HANGUL_V_COUNT) || (t < HANGUL_T_COUNT) || (s < HANGUL_S_COUNT)
+    s < HANGUL_S_COUNT
 }
 
 // относится ли кодпоинт к хангыль и может ли быть скомбинирован?
