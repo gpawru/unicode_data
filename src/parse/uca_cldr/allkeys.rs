@@ -29,6 +29,18 @@ pub struct TrieNode
     pub children: Option<HashMap<u32, TrieNode>>,
 }
 
+impl TrieNode
+{
+    /// количество дочерних элементов
+    pub fn children_len(&self) -> usize
+    {
+        match &self.children {
+            Some(children) => children.len(),
+            None => 0,
+        }
+    }
+}
+
 lazy_static! {
     /// DUCET в виде дерева, содержащая только NFD-кодпоинты
     pub static ref DUCET_FILTERED_TRIE: HashMap<u32, TrieNode> = weights_trie(&DUCET);
