@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use crate::QC_NFD;
-
 /// запись таблицы DUCET / адаптированной таблицы DUCET для CLDR, полученная из allkeys.txt UCA / CLDR
 #[derive(Debug, Clone)]
 pub struct WeightsEntry
@@ -42,13 +40,13 @@ impl TrieNode
 }
 
 lazy_static! {
-    /// DUCET в виде дерева, содержащая только NFD-кодпоинты
-    pub static ref DUCET_FILTERED_TRIE: HashMap<u32, TrieNode> = weights_trie(&DUCET);
+    /// DUCET в виде дерева
+    pub static ref DUCET_TRIE: HashMap<u32, TrieNode> = weights_trie(&DUCET);
     /// таблица DUCET из allkeys.txt
     pub static ref DUCET: Vec<WeightsEntry> = allkeys(ALLKEYS_UCA);
 
-    /// CLDR UND в виде дерева, содержащая только NFD-кодпоинты
-    pub static ref CLDR_UND_FILTERED_TRIE: HashMap<u32, TrieNode> = weights_trie(&CLDR_UND);
+    /// CLDR UND в виде дерева
+    pub static ref CLDR_UND_TRIE: HashMap<u32, TrieNode> = weights_trie(&CLDR_UND);
     /// таблица DUCET из allkeys.txt, адаптированная для CLDR
     pub static ref CLDR_UND: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR);
 }
@@ -126,14 +124,6 @@ fn weights_trie(table: &'static Vec<WeightsEntry>) -> HashMap<u32, TrieNode>
 
     for entry in table.iter() {
         let codes = &entry.codes;
-
-        // в последовательности есть ненормализованный кодпоинт - убираем
-        if codes.iter().any(|&code| match QC_NFD.get(code as usize) {
-            Some(&v) => v == 'N',
-            None => false,
-        }) {
-            continue;
-        }
 
         match codes.len() {
             1 => {
