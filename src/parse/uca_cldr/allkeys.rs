@@ -19,19 +19,28 @@ pub struct Weights
     pub is_variable: bool,
 }
 
-impl core::fmt::Debug for Weights
+impl Weights
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    /// в виде, в котором веса представлены в allkeys
+    pub fn formatted(&self) -> String
     {
         let is_variable = match self.is_variable {
             true => '*',
             false => '.',
         };
 
-        f.write_fmt(format_args!(
+        format!(
             "[{}{:04X}.{:04X}.{:04X}]",
             is_variable, self.l1, self.l2, self.l3,
-        ))
+        )
+    }
+}
+
+impl core::fmt::Debug for Weights
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        f.write_str(self.formatted().as_str())
     }
 }
 
