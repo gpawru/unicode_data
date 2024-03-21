@@ -10,7 +10,7 @@ pub struct WeightsEntry
 }
 
 /// веса для кодпоинта из DUCET, 3 уровня
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Weights
 {
     pub l1: u16,
