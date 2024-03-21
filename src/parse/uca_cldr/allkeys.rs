@@ -10,13 +10,29 @@ pub struct WeightsEntry
 }
 
 /// веса для кодпоинта из DUCET, 3 уровня
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct Weights
 {
     pub l1: u16,
     pub l2: u16,
     pub l3: u16,
     pub is_variable: bool,
+}
+
+impl core::fmt::Debug for Weights
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result
+    {
+        let is_variable = match self.is_variable {
+            true => '*',
+            false => '.',
+        };
+
+        f.write_fmt(format_args!(
+            "[{}{:04X}.{:04X}.{:04X}]",
+            is_variable, self.l1, self.l2, self.l3,
+        ))
+    }
 }
 
 /// веса кодпоинта / последовательности кодпоинтов  
