@@ -45,7 +45,7 @@ impl core::fmt::Debug for Weights
 }
 
 /// веса кодпоинта / последовательности кодпоинтов  
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct TrieNode
 {
     pub weights: &'static Vec<Weights>,
