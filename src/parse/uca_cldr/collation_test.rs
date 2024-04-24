@@ -91,6 +91,7 @@ fn parse_collation_test(source: &str) -> Vec<CollationTest>
 
             let mut weights: Vec<Vec<u16>> = weights
                 .trim_matches(['[', ']'])
+                .trim_end_matches('|')
                 .split('|')
                 .map(|weights| {
                     weights
@@ -102,7 +103,8 @@ fn parse_collation_test(source: &str) -> Vec<CollationTest>
                 .collect();
 
             assert!(weights.len() <= 4);
-            (0 .. 5 - weights.len()).for_each(|_| weights.push(vec![]));
+
+            (0 .. 4 - weights.len()).for_each(|_| weights.push(vec![]));
 
             result.push(CollationTest {
                 codes,
