@@ -10,10 +10,8 @@ pub struct CollationTest
     pub l2: Vec<u16>,
     /// L3
     pub l3: Vec<u16>,
-    /// L4
+    /// L4 (в SHIFTED)
     pub l4: Vec<u16>,
-    /// L5 (в SHIFTED)
-    pub l5: Vec<u16>,
     /// описание
     pub description: String,
 }
@@ -103,7 +101,7 @@ fn parse_collation_test(source: &str) -> Vec<CollationTest>
                 })
                 .collect();
 
-            assert!(weights.len() <= 5);
+            assert!(weights.len() <= 4);
             (0 .. 5 - weights.len()).for_each(|_| weights.push(vec![]));
 
             result.push(CollationTest {
@@ -112,7 +110,6 @@ fn parse_collation_test(source: &str) -> Vec<CollationTest>
                 l2: weights[1].clone(),
                 l3: weights[2].clone(),
                 l4: weights[3].clone(),
-                l5: weights[4].clone(),
                 description,
             });
         });
