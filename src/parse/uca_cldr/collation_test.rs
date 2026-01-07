@@ -1,3 +1,13 @@
+
+const COLLATION_TEST_DUCET_NON_IGNORABLE_SOURCE: &str =
+    include_str!("./../../../data/uca 17.0.0/CollationTest/CollationTest_NON_IGNORABLE.txt");
+const COLLATION_TEST_DUCET_SHIFTED_SOURCE: &str =
+    include_str!("./../../../data/uca 17.0.0/CollationTest/CollationTest_SHIFTED.txt");
+const COLLATION_TEST_CLDR_NON_IGNORABLE_SOURCE: &str =
+    include_str!("./../../../data/cldr 48/CollationTest/CollationTest_CLDR_NON_IGNORABLE.txt");
+const COLLATION_TEST_CLDR_SHIFTED_SOURCE: &str =
+    include_str!("./../../../data/cldr 48/CollationTest/CollationTest_CLDR_SHIFTED.txt");
+
 /// тест сопоставлений
 #[derive(Debug, Clone)]
 pub struct CollationTest
@@ -27,15 +37,6 @@ impl CollationTest
             .collect()
     }
 }
-
-const COLLATION_TEST_DUCET_NON_IGNORABLE_SOURCE: &str =
-    include_str!("./../../../data/uca 15.1.0/CollationTest/CollationTest_NON_IGNORABLE.txt");
-const COLLATION_TEST_DUCET_SHIFTED_SOURCE: &str =
-    include_str!("./../../../data/uca 15.1.0/CollationTest/CollationTest_SHIFTED.txt");
-const COLLATION_TEST_CLDR_NON_IGNORABLE_SOURCE: &str =
-    include_str!("./../../../data/cldr 44/CollationTest/CollationTest_CLDR_NON_IGNORABLE.txt");
-const COLLATION_TEST_CLDR_SHIFTED_SOURCE: &str =
-    include_str!("./../../../data/cldr 44/CollationTest/CollationTest_CLDR_SHIFTED.txt");
 
 macro_rules! collation_test {
     ($fn:ident, $pub:ident, $source:expr) => {

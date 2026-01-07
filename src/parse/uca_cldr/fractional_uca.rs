@@ -1,3 +1,5 @@
+const FRACTIONAL_UCA_SOURCE: &str = include_str!("./../../../data/cldr 48/FractionalUCA_blanked.txt");
+
 // TODO
 
 /// запись таблицы Fractional UCA
@@ -19,8 +21,6 @@ lazy_static! {
     /// https://www.unicode.org/reports/tr35/tr35-collation.html#Root_Data_Files
     pub static ref FRACTIONAL_UCA_TABLE: Vec<FractionalWeightsEntry> = fractional_table();
 }
-
-const FRACTIONAL_UCA_SOURCE: &str = include_str!("./../../../data/cldr 44/FractionalUCA.txt");
 
 fn fractional_table() -> Vec<FractionalWeightsEntry>
 {

@@ -1,5 +1,8 @@
 use std::collections::HashMap;
 
+const ALLKEYS_UCA: &str = include_str!("./../../../data/uca 17.0.0/allkeys.txt");
+const ALLKEYS_CLDR: &str = include_str!("./../../../data/cldr 48/allkeys_CLDR.txt");
+
 /// запись таблицы DUCET / адаптированной таблицы DUCET для CLDR, полученная из allkeys.txt UCA / CLDR
 #[derive(Debug, Clone)]
 pub struct WeightsEntry
@@ -75,9 +78,6 @@ lazy_static! {
     /// таблица DUCET из allkeys.txt, адаптированная для CLDR
     pub static ref CLDR_UND: Vec<WeightsEntry> = allkeys(ALLKEYS_CLDR);
 }
-
-const ALLKEYS_UCA: &str = include_str!("./../../../data/uca 15.1.0/allkeys.txt");
-const ALLKEYS_CLDR: &str = include_str!("./../../../data/cldr 44/allkeys_CLDR.txt");
 
 fn allkeys(source: &str) -> Vec<WeightsEntry>
 {
